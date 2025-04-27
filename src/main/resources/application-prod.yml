@@ -1,0 +1,102 @@
+spring:
+  application:
+    name: manager
+
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:36.50.135.242}:${POSTGRES_PORT:9012}/${DATABASE_NAME:dblap-app}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:dlap123456aA@}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: false          # This will show SQL queries
+        format_sql: true        # This will format the SQL for better readability
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        max-page-size: 1000
+  kafka:
+    enable: true
+    bootstrap-servers: ${KAFKA_HOST:36.50.135.242}:${KAFKA_PORT:9092}
+    producer:
+      retries: 0
+      acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+    consumer:
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      properties:
+        spring.json.trusted.packages: '*'
+    topic-and-group:
+      submit-result: ptit.dblab.judge.submit-result
+      tracker-log: ptit.dblab.app.tracker.log
+    servlet:
+      multipart:
+        enabled: true
+        max-file-size: 10MB
+        max-request-size: 10MB
+    base-url: http://localhost:8080/api/manager
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api/manager
+
+jwt:
+  secretKey: d7a2e02002c6513e859479f581b4dff72ad56cdf03cf674c84a56fc39a7853dd
+  accessTokenExpiration:  7200000  # 1 hour in milliseconds
+  refreshTokenExpiration: 604800000  # 1 week in milliseconds
+
+party-service-client:
+  mysql:
+    url: http://localhost:8081
+    typeDatabase: "1"
+  sqlserver:
+    url: http://localhost:8083
+    typeDatabase: "2"
+  submit-svc:
+    url: http://localhost:8082
+    apiKey: a55dc8c6-4119-4364-997f-7337516022f8
+
+account:
+  path-save: data/accounts.xlsx
+
+scheduling:
+  contest-cron: "0 * * * * *"
+  submit-practice: "0 * * * * *"
+  submit-contest: "0 * * * * *"
+
+retry-submit:
+  batch-size: 100
+
+check-cheat:
+  max-time-copy: 5
+  max-time-paste: 3
+  max-time-switch-tab: 3
+  max-time-return-tab: 3
+
+file:
+  upload-dir: upload/
+
+logging:
+  level:
+    org.springframework.cloud.openfeign: OFF
+    com.netflix.discovery: OFF
+    feign: DEBUG
+    com.netflix.client: OFF
+
+
+eureka:
+  client:
+    enabled: false
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER:http://36.50.135.242:9000/eureka/}
+
