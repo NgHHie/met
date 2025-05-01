@@ -8,14 +8,14 @@
 		<version>3.4.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
-	<artifactId>dblab-app</artifactId>
+	<groupId>ptit.dblab</groupId>
+	<artifactId>app</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>dblab-app</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Database Lab Application</description>
+	
 	<properties>
 		<java.version>17</java.version>
-		<dblab-shared.version>1.0.0</dblab-shared.version>
 		<springdoc-openapi-starter-webmvc-ui.version>2.4.0</springdoc-openapi-starter-webmvc-ui.version>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
 		<lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
@@ -35,12 +35,21 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<dependencies>
+
+		<dependency>
+			<groupId>com.github.jsqlparser</groupId>
+			<artifactId>jsqlparser</artifactId>
+			<version>4.7</version> <!-- Bạn có thể cập nhật phiên bản này nếu cần -->
+		</dependency>
+		<!-- Sử dụng shared module từ local repository -->
 		<dependency>
 			<groupId>ptit.dblab</groupId>
 			<artifactId>shared</artifactId>
-			<version>${dblab-shared.version}</version>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/libs/shared-0.0.1-SNAPSHOT.jar</systemPath>
 		</dependency>
 		
 		<!-- Spring Boot -->
