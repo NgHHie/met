@@ -500,8 +500,10 @@ public class QuestionService extends BaseService<Question, QuestionRepository>{
 	}
 	public Page<QuestionBasicResponse> getQuestionListDetail(Pageable pageable, String keyword, LevelQuestion level, String typeDatabaseId, TypeQuestion typeQuestion,String createdBy) {
 		if (pageable.getSort().isUnsorted()) {
-			pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-									Sort.by(Sort.Direction.DESC, "createdAt"));
+			pageable = PageRequest.of(
+				pageable.getPageNumber(), 
+				pageable.getPageSize(),
+				Sort.by(Sort.Direction.DESC, "createdAt"));
 		}
 		Page<Question> questionPage;
 		if(contextUtil.getUser().getRole().equals(Role.ADMIN.name())) {
