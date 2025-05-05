@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.core.type.TypeReference;
 import net.sf.jsqlparser.JSQLParserException;
 import org.apache.poi.ss.usermodel.*;
+import org.springframework.data.domain.Sort;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.web.multipart.MultipartFile;
 import ptit.dblab.app.dto.response.*;
@@ -36,6 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -119,10 +121,12 @@ public class QuestionService extends BaseService<Question, QuestionRepository>{
 	@Transactional
 	public void update(String id, QuestionRequest request) {
 		Question currentQuestion = this.findById(id);
+		System.out.println(currentQuestion);
 		log.info("****************** update ***************");
 		questionMapper.update(currentQuestion, questionMapper.toEntity(request));
 		List<String> tableCreatedIds = new ArrayList<>();
 		for(QuestionDetail questionDetail : currentQuestion.getQuestionDetails()) {
+			System.out.println(questionDetail.getTestcases());
 			if(Objects.isNull(questionDetail.getTestcases())) {
 				throw new ValidateException("Testcase không được bỏ trống");
 			}
@@ -495,6 +499,10 @@ public class QuestionService extends BaseService<Question, QuestionRepository>{
 		return response;
 	}
 	public Page<QuestionBasicResponse> getQuestionListDetail(Pageable pageable, String keyword, LevelQuestion level, String typeDatabaseId, TypeQuestion typeQuestion,String createdBy) {
+		if (pageable.getSort().isUnsorted()) {
+			pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+									Sort.by(Sort.Direction.DESC, "createdAt"));
+		}
 		Page<Question> questionPage;
 		if(contextUtil.getUser().getRole().equals(Role.ADMIN.name())) {
 			questionPage = this.repository.findAll((root, query, criteriaBuilder) -> {
